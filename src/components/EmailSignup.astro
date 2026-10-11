@@ -1,0 +1,26 @@
+---
+---
+<section class="signup">
+  <div class="wrap signup-inner">
+    <div>
+      <h2>Five finds, every Friday</h2>
+      <p>The best things that crossed my counter this week, in one short email. No spam, unsubscribe anytime.</p>
+    </div>
+    <form name="newsletter" method="POST" data-netlify="true" netlify-honeypot="company" action="/thanks/" class="signup-form">
+      <input type="hidden" name="form-name" value="newsletter" />
+      <p hidden><label>Leave this empty <input name="company" /></label></p>
+      <label for="signup-email" class="sr">Email address</label>
+      <input id="signup-email" type="email" name="email" required placeholder="you@email.com" autocomplete="email" />
+      <button class="btn btn-buy" type="submit">Get the Friday email</button>
+    </form>
+  </div>
+</section>
+<style>
+  .signup { background: var(--green); color: #e6efe9; padding-block: clamp(3rem, 6vw, 4.5rem); }
+  .signup h2 { color: #fff; }
+  .signup p { color: #c3d6cc; }
+  .signup-inner { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); align-items: center; }
+  .signup-form { display: flex; gap: .6rem; flex-wrap: wrap; }
+  .signup-form input[type='email'] { flex: 1 1 220px; font: inherit; padding: .85rem 1.2rem; border: 0; border-radius: 999px; background: #fff; color: var(--ink); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>

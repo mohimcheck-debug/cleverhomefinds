@@ -1,0 +1,31 @@
+---
+import { categories } from '../data/site.js';
+const { product } = Astro.props;
+const d = product.data;
+const cat = categories.find((c) => c.id === d.category);
+const img = d.imageUrl || d.image;
+---
+<article class="pc">
+  <a href={`/products/${product.id}/`} class="pc-link">
+    <div class="pc-img studio" data-cat={d.category}>
+      {img ? <img src={img} alt={d.title} loading="lazy" width="800" height="800" /> : <span class="pc-noimg">{d.title}</span>}
+      <span class="pc-band">{d.priceBand}</span>
+    </div>
+    <p class="pc-cat">{cat?.name}</p>
+    <h3>{d.title}</h3>
+    <p class="pc-sum">{d.summary}</p>
+  </a>
+</article>
+
+<style>
+  .pc-link { display: block; text-decoration: none; }
+  .pc-img { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden; display: grid; place-items: center; margin-bottom: .9rem; }
+  .pc-img img { width: 84%; height: 84%; object-fit: contain; transition: transform .3s ease; }
+  .pc-link:hover .pc-img img { transform: scale(1.04); }
+  .pc-noimg { padding: 1.5rem; text-align: center; color: var(--muted); font-weight: 600; }
+  .pc-band { position: absolute; top: .8rem; left: .8rem; background: #fff; color: var(--ink); font-size: .8rem; font-weight: 600; padding: .2rem .65rem; border-radius: 999px; }
+  .pc-cat { font-size: .85rem; color: var(--muted); margin: 0 0 .2rem; }
+  .pc h3 { margin-bottom: .3rem; }
+  .pc-link:hover h3 { text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+  .pc-sum { font-size: .95rem; color: var(--muted); margin: 0; }
+</style>

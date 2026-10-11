@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site.js';
+---
+<Base title="Privacy policy">
+  <section class="section"><div class="wrap prose">
+    <h1>Privacy policy</h1>
+    <p>Last updated: October 2026.</p>
+    <h2>What we collect</h2>
+    <p>If you join the email list, we store the email address you give us so we can send you the newsletter. You can unsubscribe at any time from any email.</p>
+    <h2>Cookies and third parties</h2>
+    <p>This site links to Amazon. When you click a link, Amazon may set cookies to track the referral so we can earn a commission. Embedded videos are served by YouTube in privacy-enhanced mode. These services have their own privacy policies.</p>
+    <h2>Contact</h2>
+    <p>For any privacy question or to have your email removed, contact <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+  </div></section>
+</Base>

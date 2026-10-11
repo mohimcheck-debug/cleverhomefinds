@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getCollection } from 'astro:content';
+import { visibleCategories } from '../data/site.js';
+const products = (await getCollection('products')).sort((a, b) => b.data.date - a.data.date);
+---
+<Base title="Shop every find" description="Every kitchen and home find in one place, newest first.">
+  <section class="section">
+    <div class="wrap">
+      <h1>Shop every find</h1>
+      <p class="lead">Saw something in a video? It's here. Newest first.</p>
+      <div class="filters" role="group" aria-label="Filter by category">
+        <button type="button" class="chip" aria-pressed="true" data-filter="all">All</button>
+        {visibleCategories.map((c) => (
+          <button type="button" class="chip" aria-pressed="false" data-filter={c.id}>{c.name}</button>
+        ))}
+      </div>
+      <div class="grid" id="shop-grid">
+        {products.map((p) => <div data-cat={p.data.category}><ProductCard product={p} /></div>)}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+  const items = document.querySelectorAll<HTMLElement>('#shop-grid > [data-cat]');
+  chips.forEach((chip) => chip.addEventListener('click', () => {
+    const f = chip.dataset.filter;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+    items.forEach((el) => { el.hidden = f !== 'all' && el.dataset.cat !== f; });
+  }));
+</script>
+
+<style>
+  .lead { font-size: 1.15rem; color: var(--muted); }
+  .filters { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1.5rem 0 2rem; }
+  .chip { font: 600 .95rem var(--body); padding: .55rem 1.1rem; border-radius: 999px; border: 1.5px solid #c9d0cb; background: #fff; color: var(--ink); cursor: pointer; }
+  .chip:hover { border-color: var(--ink); }
+  .chip[aria-pressed='true'] { background: var(--green); border-color: var(--green); color: #fff; }
+  #shop-grid > div { display: flex; }
+  #shop-grid > div[hidden] { display: none; }
+  #shop-grid > div > :global(.pc) { width: 100%; }
+</style>

@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, disclosure } from '../data/site.js';
+---
+<Base title="Affiliate disclosure">
+  <section class="section"><div class="wrap prose">
+    <h1>Affiliate disclosure</h1>
+    <p>{disclosure}</p>
+    <p>{site.name} is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.</p>
+    <p>Prices and availability change often. The price shown on Amazon at the time you buy is the one that applies. Product picks are my own opinion and are never paid placements.</p>
+    <p>Questions? Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+  </div></section>
+</Base>

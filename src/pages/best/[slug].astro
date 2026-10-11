@@ -1,0 +1,67 @@
+---
+import Base from '../../layouts/Base.astro';
+import EmailSignup from '../../components/EmailSignup.astro';
+import { getCollection, render } from 'astro:content';
+import { amazonLink, disclosure } from '../../data/site.js';
+
+export async function getStaticPaths() {
+  const roundups = await getCollection('roundups');
+  return roundups.map((r) => ({ params: { slug: r.id }, props: { roundup: r } }));
+}
+const { roundup } = Astro.props;
+const { Content } = await render(roundup);
+const all = await getCollection('products');
+const picks = roundup.data.products.map((id) => all.find((p) => p.id === id)).filter(Boolean);
+---
+<Base title={roundup.data.title} description={roundup.data.description}>
+  <article class="section">
+    <div class="wrap">
+      <header class="rh">
+        <p class="kicker">{picks.length} picks</p>
+        <h1>{roundup.data.title}</h1>
+        <div class="prose intro"><Content /></div>
+        <p class="disclosure">{disclosure}</p>
+      </header>
+      <ol class="picks plain">
+        {picks.map((p, i) => (
+          <li class="pick">
+            <a href={`/products/${p.id}/`} class="pick-img studio" data-cat={p.data.category} tabindex="-1" aria-hidden="true">
+              {(p.data.imageUrl || p.data.image) && <img src={p.data.imageUrl || p.data.image} alt="" loading="lazy" />}
+            </a>
+            <div class="pick-body">
+              <p class="num">Pick {i + 1}</p>
+              <h2><a href={`/products/${p.id}/`}>{p.data.title}</a></h2>
+              <p class="sum">{p.data.summary}</p>
+              <ul>{p.data.bullets.slice(0, 2).map((b) => <li>{b}</li>)}</ul>
+              {p.data.bestFor && <p class="best"><strong>Best for:</strong> {p.data.bestFor}</p>}
+              <div class="pick-actions">
+                <a class="btn btn-buy" href={amazonLink(p.data)} target="_blank" rel="nofollow sponsored noopener">Check price on Amazon</a>
+                <a class="btn btn-quiet" href={`/products/${p.id}/`}>Full details</a>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </article>
+  <EmailSignup />
+</Base>
+<style>
+  .rh { max-width: 760px; }
+  .kicker { color: var(--green); font-weight: 600; margin-bottom: .4rem; }
+  .intro { font-size: 1.15rem; color: #3c4a47; }
+  .disclosure { font-size: .82rem; color: var(--muted); }
+  .picks { display: grid; gap: 1.5rem; margin-top: 2.5rem; }
+  .pick { display: grid; grid-template-columns: minmax(160px, 300px) 1fr; gap: clamp(1.25rem, 3vw, 2.5rem); align-items: center; padding: 1.25rem; background: #fff; border: 1px solid var(--line); border-radius: calc(var(--radius) + 4px); }
+  @media (max-width: 640px) { .pick { grid-template-columns: 1fr; } }
+  .pick-img { aspect-ratio: 1; border-radius: var(--radius); display: grid; place-items: center; }
+  .pick-img img { width: 80%; height: 80%; object-fit: contain; }
+  .num { color: var(--green); font-weight: 600; margin-bottom: .2rem; }
+  .pick h2 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); margin-bottom: .4rem; }
+  .pick h2 a { text-decoration: none; }
+  .pick h2 a:hover { text-decoration: underline; }
+  .sum { color: var(--muted); }
+  .pick ul { padding-left: 1.1rem; color: #3c4a47; margin: 0 0 1rem; }
+  .best { font-size: .95rem; }
+  .pick-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+</style>

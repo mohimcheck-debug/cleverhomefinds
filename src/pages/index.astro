@@ -1,0 +1,134 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+import { getCollection } from 'astro:content';
+import { visibleCategories } from '../data/site.js';
+
+const products = (await getCollection('products')).sort((a, b) => b.data.date - a.data.date);
+const featured = products.filter((p) => p.data.featured);
+const heroPicks = (featured.length >= 3 ? featured : products).slice(0, 3);
+const latest = products.slice(0, 8);
+const roundups = (await getCollection('roundups')).sort((a, b) => b.data.date - a.data.date);
+const imgOf = (p) => p.data.imageUrl || p.data.image;
+const countIn = (id) => products.filter((p) => p.data.category === id).length;
+---
+<Base>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1>Kitchen and home finds that actually earn their spot.</h1>
+        <p class="lede">I test what's trending on Amazon, show it working in short videos, and only keep the things worth your money.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/shop/">Shop all finds</a>
+          {roundups[0] && <a class="btn btn-quiet" href={`/best/${roundups[0].id}/`}>Best under $25</a>}
+        </div>
+        <ul class="trust plain">
+          <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3 3 7-7" /></svg>Shown working in real videos</li>
+          <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3 3 7-7" /></svg>Picked for reviews and value</li>
+          <li><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 10.5l3 3 7-7" /></svg>Live prices on Amazon</li>
+        </ul>
+      </div>
+      <div class="showcase">
+        {heroPicks.map((p, i) => (
+          <a href={`/products/${p.id}/`} class={`show show-${i} studio`} data-cat={p.data.category}>
+            <img src={imgOf(p)} alt={p.data.title} width="800" height="800" />
+            <span class="show-label">{p.data.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Newest finds</h2>
+          <p>Fresh picks from this week's videos.</p>
+        </div>
+        <a class="btn btn-quiet" href="/shop/">Shop all</a>
+      </div>
+      <div class="grid">{latest.map((p) => <ProductCard product={p} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Round-ups</h2>
+          <p>Short lists for when you want the answer, not a rabbit hole.</p>
+        </div>
+      </div>
+      <div class="roundups">
+        {roundups.map((r) => {
+          const picks = r.data.products.map((id) => products.find((p) => p.id === id)).filter(Boolean).slice(0, 3);
+          return (
+            <a class="ru" href={`/best/${r.id}/`}>
+              <div class="ru-imgs">
+                {picks.map((p) => <span class="studio" data-cat={p.data.category}><img src={imgOf(p)} alt="" loading="lazy" /></span>)}
+              </div>
+              <h3>{r.data.title}</h3>
+              <p>{r.data.description}</p>
+              <span class="ru-count">{r.data.products.length} picks</span>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Browse by room and chore</h2>
+      <div class="cats">
+        {visibleCategories.map((c) => (
+          <a class="cat" href={`/category/${c.id}/`}>
+            <strong>{c.name}</strong>
+            <span>{c.blurb}</span>
+            <span class="cat-count">{countIn(c.id)} finds</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <EmailSignup />
+</Base>
+
+<style>
+  .hero { padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .hero-grid { display: grid; gap: clamp(2rem, 5vw, 4.5rem); grid-template-columns: 1.05fr 1fr; align-items: center; }
+  @media (max-width: 880px) { .hero-grid { grid-template-columns: 1fr; } }
+  .lede { font-size: 1.2rem; color: var(--muted); }
+  .hero-actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.75rem; }
+  .trust { display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; margin-top: 1.75rem; font-size: .95rem; color: var(--muted); }
+  .trust li { display: inline-flex; align-items: center; gap: .4rem; }
+  .trust svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: var(--green); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+  .showcase { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 14px; aspect-ratio: 1.15; }
+  .show { position: relative; border-radius: var(--radius); overflow: hidden; display: grid; place-items: center; text-decoration: none; }
+  .show-0 { grid-row: span 2; }
+  .show img { width: 80%; height: 80%; object-fit: contain; transition: transform .3s ease; }
+  .show-1 img, .show-2 img { width: 62%; height: 62%; margin-bottom: 2.4rem; }
+  .show:hover img { transform: scale(1.04); }
+  .show-label { position: absolute; left: .8rem; bottom: .8rem; right: .8rem; font-size: .85rem; font-weight: 600; background: rgba(255,255,255,.92); padding: .35rem .7rem; border-radius: 10px; width: fit-content; max-width: calc(100% - 1.6rem); }
+
+  @media (max-width: 600px) { .show-label { display: none; } .show-1 img, .show-2 img { margin-bottom: 0; width: 72%; height: 72%; } }
+  .roundups { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .ru { display: block; text-decoration: none; background: #fff; border-radius: var(--radius); padding: 1.25rem 1.25rem 1.5rem; border: 1px solid var(--line); }
+  .ru:hover { border-color: var(--ink); }
+  .ru-imgs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.1rem; }
+  .ru-imgs span { aspect-ratio: 1; border-radius: 12px; display: grid; place-items: center; }
+  .ru-imgs img { width: 78%; height: 78%; object-fit: contain; }
+  .ru p { color: var(--muted); font-size: .95rem; }
+  .ru-count { font-size: .85rem; font-weight: 600; color: var(--green); }
+
+  .cats { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); margin-top: 1.5rem; }
+  .cat { display: flex; flex-direction: column; gap: .3rem; text-decoration: none; padding: 1.4rem 1.5rem; border-radius: var(--radius); border: 1px solid var(--line); background: #fff; }
+  .cat:hover { border-color: var(--ink); }
+  .cat strong { font: 700 1.25rem var(--display); letter-spacing: -0.01em; }
+  .cat span { color: var(--muted); font-size: .95rem; }
+  .cat .cat-count { color: var(--green); font-weight: 600; margin-top: .3rem; }
+</style>

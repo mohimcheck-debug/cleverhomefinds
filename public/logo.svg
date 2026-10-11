@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 120">
+<rect width="120" height="120" rx="28" fill="#1f4d3f"/>
+<path d="M30 56 L60 31 L90 56 V88 q0 6 -6 6 H36 q-6 0 -6 -6z" fill="none" stroke="#f6f4ee" stroke-width="7" stroke-linejoin="round"/>
+<path d="M45 66 L56 77 L76 56" fill="none" stroke="#e0b25c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="146" y="58" font-family="'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif" font-weight="800" font-size="40" fill="#14201f" letter-spacing="-1">Clever Home</text>
+<text x="146" y="100" font-family="'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif" font-weight="500" font-size="30" fill="#1f4d3f" letter-spacing="6">FINDS</text>
+</svg>

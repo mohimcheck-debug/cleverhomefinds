@@ -1,0 +1,154 @@
+---
+import { site, visibleCategories, disclosure } from '../data/site.js';
+const { title, description = site.tagline } = Astro.props;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name}: ${site.tagline}`;
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={new URL(path, Astro.site)} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a href="/" class="logo" aria-label={`${site.name} home`}>
+        <img src="/logo-mark.svg" alt="" width="36" height="36" />
+        <span>{site.name}</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="/about/" aria-current={path.startsWith('/about') ? 'page' : undefined}>About</a>
+        <a href="/shop/" aria-current={path.startsWith('/shop') ? 'page' : undefined}>Shop all</a>
+        {visibleCategories.map((c) => (
+          <a href={`/category/${c.id}/`} aria-current={path.includes(`/category/${c.id}`) ? 'page' : undefined}>{c.name}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="footer-brand"><img src="/logo-mark.svg" alt="" width="32" height="32" /> {site.name}</p>
+        <p>{site.tagline}</p>
+      </div>
+      <div>
+        <p class="footer-head">Follow along</p>
+        <ul class="plain">
+          <li><a href={site.instagram} rel="noopener">Instagram</a></li>
+          <li><a href={site.tiktok} rel="noopener">TikTok</a></li>
+          <li><a href={site.pinterest} rel="noopener">Pinterest</a></li>
+          <li><a href={site.youtube} rel="noopener">YouTube</a></li>
+          <li><a href={site.facebook} rel="noopener">Facebook</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-head">The fine print</p>
+        <ul class="plain">
+          <li><a href="/about/">About</a></li>
+          <li><a href="/disclosure/">Affiliate disclosure</a></li>
+          <li><a href="/privacy/">Privacy policy</a></li>
+          <li><a href={`mailto:${site.email}`}>Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wrap">
+      <p class="footer-disclosure">{disclosure}</p>
+      <p class="footer-disclosure">© {new Date().getFullYear()} {site.name}. Amazon and the Amazon logo are trademarks of Amazon.com, Inc. or its affiliates.</p>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #fbfbf9;
+    --ink: #14201f;
+    --muted: #5b6966;
+    --line: #e3e7e3;
+    --green: #1f4d3f;
+    --green-dark: #163a2f;
+    --brass: #e0b25c;
+    --brass-dark: #c99a43;
+    --studio: #eef1ed;
+    --studio-cleaning: #ebeff3;
+    --studio-organization: #f2eee7;
+    --radius: 20px;
+    --display: 'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif;
+    --body: 'Figtree', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.0625rem/1.6 var(--body); -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--brass); outline-offset: 3px; border-radius: 6px; }
+  h1, h2, h3 { font-family: var(--display); line-height: 1.06; letter-spacing: -0.025em; margin: 0 0 .5em; color: var(--ink); }
+  h1 { font-size: clamp(2.4rem, 5.6vw, 4.2rem); font-weight: 800; }
+  h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); font-weight: 700; }
+  h3 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; }
+  p { margin: 0 0 1em; max-width: 65ch; }
+  .wrap { width: min(1200px, 100% - 2.5rem); margin-inline: auto; }
+  .plain { list-style: none; padding: 0; margin: 0; }
+  .skip { position: absolute; left: -999px; }
+  .skip:focus { left: 1rem; top: 1rem; background: var(--brass); padding: .5rem 1rem; z-index: 10; }
+
+  .site-header { background: rgba(251, 251, 249, .92); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+  .header-row { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-block: .85rem; flex-wrap: wrap; }
+  .logo { display: inline-flex; align-items: center; gap: .65rem; font: 800 1.2rem var(--display); text-decoration: none; letter-spacing: -0.02em; }
+  .site-header nav { display: flex; gap: 1.4rem; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .site-header nav a { text-decoration: none; font-weight: 500; color: var(--muted); padding-block: .3rem; }
+  .site-header nav a:hover, .site-header nav a[aria-current='page'] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--green); }
+  @media (max-width: 680px) { .header-row { row-gap: .4rem; padding-block: .7rem .5rem; } .site-header nav { width: 100%; gap: 1.1rem; font-size: .95rem; } .site-header { position: static; } }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; font: 600 1rem var(--body); text-decoration: none; padding: .85rem 1.5rem; border-radius: 999px; border: 1.5px solid transparent; cursor: pointer; transition: background-color .15s ease; }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-buy { background: var(--brass); color: var(--ink); }
+  .btn-buy:hover { background: var(--brass-dark); }
+  .btn-quiet { background: transparent; color: var(--ink); border-color: #c9d0cb; }
+  .btn-quiet:hover { border-color: var(--ink); }
+
+  .section { padding-block: clamp(3rem, 7vw, 5.5rem); }
+  .section-tint { background: #f1f4f0; }
+  .section-head { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .section-head p { color: var(--muted); margin: 0; }
+  .grid { display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); }
+
+  .studio { background: var(--studio); }
+  .studio[data-cat='cleaning'] { background: var(--studio-cleaning); }
+  .studio[data-cat='organization'] { background: var(--studio-organization); }
+
+  .site-footer { background: var(--ink); color: #c9d4d0; padding-block: 3.5rem 2rem; }
+  .site-footer a { color: #fff; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .footer-grid { display: grid; gap: 2rem; grid-template-columns: 2fr 1fr 1fr; margin-bottom: 2.5rem; }
+  @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr; } }
+  .footer-brand { display: flex; align-items: center; gap: .6rem; font: 800 1.25rem var(--display); color: #fff; margin-bottom: .5rem; }
+  .footer-head { font-weight: 600; color: #fff; margin-bottom: .6rem; }
+  .site-footer li { margin-bottom: .35rem; }
+  .footer-disclosure { font-size: .85rem; color: #93a39e; max-width: 80ch; }
+
+  .prose { max-width: 68ch; }
+  .prose h2 { margin-top: 1.5em; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>

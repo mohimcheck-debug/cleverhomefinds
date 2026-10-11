@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import EmailSignup from '../../components/EmailSignup.astro';
+import { getCollection } from 'astro:content';
+import { visibleCategories } from '../../data/site.js';
+export function getStaticPaths() {
+  return visibleCategories.map((c) => ({ params: { slug: c.id }, props: { cat: c } }));
+}
+const { cat } = Astro.props;
+const products = (await getCollection('products')).filter((p) => p.data.category === cat.id).sort((a, b) => b.data.date - a.data.date);
+---
+<Base title={cat.name} description={cat.blurb}>
+  <section class="section">
+    <div class="wrap">
+      <header class="ch">
+        <h1>{cat.name}</h1>
+        <p class="lead">{cat.blurb}</p>
+      </header>
+      {products.length ? (
+        <div class="grid">{products.map((p) => <ProductCard product={p} />)}</div>
+      ) : (
+        <p>New finds for this section are on the way. Meanwhile, <a href="/shop/">browse everything</a>.</p>
+      )}
+    </div>
+  </section>
+  <EmailSignup />
+</Base>
+<style>
+  .ch { margin-bottom: 2.5rem; }
+  .lead { font-size: 1.15rem; color: var(--muted); margin: 0; }
+</style>

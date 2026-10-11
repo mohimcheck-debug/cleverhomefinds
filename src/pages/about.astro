@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site.js';
+---
+<Base title="About" description="Who picks the finds, and how.">
+  <section class="section">
+    <div class="wrap about">
+      <img src="/logo-mark.svg" alt="" width="72" height="72" />
+      <h1>Fewer, better things for your home.</h1>
+      <div class="prose">
+        <p>Amazon has millions of kitchen and home products, and most of them are forgettable. {site.name} exists to find the handful that are actually worth buying.</p>
+        <h2>How a product makes the list</h2>
+        <p>Every pick has to clear three bars: a real problem it solves, a strong track record from thousands of buyers, and a fair price for what you get. Then it goes on camera, so you can see it working before you buy.</p>
+        <h2>What we don't do</h2>
+        <p>No paid placements, and no "top 10" lists padded with filler. If something stops being a good deal or gets worse reviews, it comes off the site.</p>
+        <h2>How this site makes money</h2>
+        <p>When you buy through a link here, Amazon pays a small commission. It doesn't change your price, and it's what keeps the videos and the site going. Thanks for supporting it.</p>
+        <p><a class="btn btn-primary" href="/shop/">Browse the finds</a></p>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .about { max-width: 760px; }
+  .about img { margin-bottom: 1.5rem; }
+  .about .prose { font-size: 1.1rem; }
+</style>

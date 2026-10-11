@@ -1,0 +1,71 @@
+# Admin dashboard for Clever Home Finds (Decap CMS)
+# STEP: replace YOUR-GITHUB-USERNAME below with your GitHub username.
+backend:
+  name: github
+  repo: YOUR-GITHUB-USERNAME/clever-home-finds
+  branch: main
+
+site_url: https://cleverhomefinds.netlify.app
+display_url: https://cleverhomefinds.netlify.app
+media_folder: public/images/products
+public_folder: /images/products
+
+collections:
+  - name: products
+    label: Products
+    label_singular: Product
+    folder: src/content/products
+    create: true
+    slug: "{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{title}} ({{category}})"
+    fields:
+      - { label: Product name, name: title, widget: string }
+      - label: Category
+        name: category
+        widget: select
+        options:
+          - { label: Kitchen gadgets, value: kitchen }
+          - { label: Cleaning, value: cleaning }
+          - { label: Organization, value: organization }
+          - { label: Smart home, value: smart-home }
+          - { label: Desk setup, value: desk-setup }
+          - { label: Tech finds, value: tech-finds }
+      - { label: One-line summary, name: summary, widget: string, hint: "What problem does it fix? Shown on cards and in Google." }
+      - { label: Why it's worth it (3 bullets), name: bullets, widget: list, field: { label: Bullet, name: bullet, widget: string } }
+      - label: Price band
+        name: priceBand
+        widget: select
+        hint: Never type an exact price. Amazon prices change and exact prices break the rules.
+        options: [Under $10, Under $15, Under $20, Under $25, Under $50, Under $100, $100+]
+        default: Under $25
+      - { label: Amazon link (from SiteStripe), name: amazonUrl, widget: string, required: false, hint: "Paste your SiteStripe short link (amzn.to/...). Leave empty to use an Amazon search link with your tag." }
+      - { label: Product photo (upload), name: image, widget: image, required: false, hint: "Upload a screenshot from your reel. Square images look best." }
+      - { label: OR Amazon image link (SiteStripe Image), name: imageUrl, widget: string, required: false, hint: "Optional. From SiteStripe > Get Link > Image, copy only the src link of the image. This overrides the upload." }
+      - { label: YouTube Shorts video ID, name: youtubeId, widget: string, required: false, hint: "From youtube.com/shorts/ABC123xyz, paste only ABC123xyz. Replaces the photo on the product page." }
+      - { label: Best for, name: bestFor, widget: string, required: false, hint: "Who should buy this? One sentence." }
+      - { label: Heads up, name: headsUp, widget: string, required: false, hint: "One honest downside or tip. Builds trust." }
+      - { label: Quick specs, name: specs, widget: list, required: false, field: { label: Spec, name: spec, widget: string } }
+      - { label: Feature on homepage, name: featured, widget: boolean, default: false }
+      - { label: Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: Short story (optional), name: body, widget: markdown, required: false }
+
+  - name: roundups
+    label: Round-ups
+    label_singular: Round-up
+    folder: src/content/roundups
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string, hint: "e.g. Best kitchen gadgets under $25" }
+      - { label: Description, name: description, widget: string }
+      - label: Products (in order)
+        name: products
+        widget: relation
+        collection: products
+        search_fields: [title]
+        value_field: "{{slug}}"
+        display_fields: [title]
+        multiple: true
+      - { label: Date, name: date, widget: datetime, date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: Intro, name: body, widget: markdown }

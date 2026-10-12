@@ -8,7 +8,7 @@ bullets:
   - Fits most 5–8 quart baskets.
   - 125 in a pack, so months of easy cleanup.
 priceBand: Under $15
-image: /images/products/untitled2.jpg
+image: /images/products/download.jpeg
 bestFor: Daily air fryer users who dread cleaning the basket.
 headsUp: Always put food on top so the liner can't blow into the heating element.
 specs:
